@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscador de Mascotas - Funcional</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body class="has-background-primary-light">
+
+  <!-- Navbar -->
+  <nav class="navbar is-primary py-4">
+    <div class="navbar-brand">
+      <a class="navbar-item has-text-weight-bold">
+        <img src="images/logoMascotas.png" style="max-height: 6rem; border-radius: 50%;" alt="img">
+      </a>
+    </div>
+    <div class="navbar-item is-expanded has-text-centered">
+      <h1 class="title has-text-white is-3">Buscador de Mascotas</h1>
+    </div>
+  </nav>
+
+  <!-- Seccion Principal -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Título y botón agregar -->
+      <div class="columns is-vcentered is-mobile mb-5">
+        <div class="column is-flex is-justify-content-space-between is-align-items-center">
+          <h2 class="title is-1">Adopta 🐾</h2>
+          <button id="btnAgregarMascota" class="button is-success is-medium">+ Agregar Mascota</button>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="box mb-5">
+        <div class="columns is-multiline is-vcentered is-justify-content-left">
+          <div class="column is-full has-text-centered mb-2">
+            <span class="icon mr-2"><i class="fas fa-filter"></i></span>
+            <span class="has-text-weight-semibold">Filtrar Búsquedas</span>
+          </div>
+
+          <div class="column is-4-desktop is-6-tablet">
+            <input id="filtroNombre" class="input is-medium" type="text" placeholder="🔍 Buscar por nombre">
+          </div>
+          <div class="column is-2-desktop is-6-tablet">
+            <div class="select is-medium is-fullwidth">
+              <select id="filtroCategoria">
+                <option value="" disabled selected>Categoría</option>
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+                <option value="Ave">Ave</option>
+                <option value="Mamifero">Conejo</option>
+              </select>
+            </div>
+          </div>
+
+
+          <div class="column is-2-desktop is-6-tablet">
+            <div class="select is-medium is-fullwidth">
+              <select id="filtroEdad">
+                <option value="" disabled selected>Edad</option>
+                <option value="cachorro">Cachorro</option>
+                <option value="joven">Joven</option>
+                <option value="adulto">Adulto</option>
+              </select>
+            </div>
+          </div>
+          <div class="column is-narrow-desktop is-6-tablet">
+            <div class="buttons is-centered">
+              <button id="btnBuscar" class="button is-info is-medium"><span class="icon"><i class="fas fa-search"></i></span><span>Buscar</span></button>
+              <button id="btnLimpiar" class="button is-light is-medium"><span class="icon"><i class="fas fa-times"></i></span><span>Limpiar</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spinner -->
+      <div id="loader" class="has-text-centered my-5" style="display:none;">
+        <button class="button is-loading is-large is-white">Cargando...</button>
+      </div>
+
+      <!-- Listado de mascotas -->
+      <div id="listado" class="columns is-multiline"></div>
+
+      <!-- Mensaje vacío -->
+      <div id="mensajeVacio" class="notification is-warning has-text-centered" style="display:none;">
+        No se encontraron resultados con los filtros aplicados.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Modal Form -->
+  <div class="modal" id="modalMascota">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title" id="modalTitle">Nueva Mascota</p>
+        <button class="delete" aria-label="close" id="btnCerrarModal"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Nombre</label>
+          <input id="inputNombre" class="input" type="text" placeholder="Nombre de la mascota">
+        </div>
+        <div class="field">
+          <label class="label">Categoría</label>
+          <div class="select is-fullwidth">
+            <select id="inputCategoria">
+              <option value="" disabled selected>Seleccionar categoría</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+              <option value="Ave">Ave</option>
+              <option value="Mamifero">Conejo</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Edad</label>
+          <div class="select is-fullwidth">
+            <select id="inputEdad">
+              <option value="" disabled selected>Seleccionar edad</option>
+              <option value="cachorro">Cachorro</option>
+              <option value="joven">Joven</option>
+              <option value="adulto">Adulto</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Imagen (URL)</label>
+          <input id="inputImagen" class="input" type="url" placeholder="http://...">
+        </div>
+        <input type="hidden" id="editIndex">
+      </section>
+      <footer class="modal-card-foot">
+        <button id="btnGuardar" class="button is-success">Guardar</button>
+        <button id="btnCancelar" class="button">Cancelar</button>
+      </footer>
+    </div>
+  </div>
+
+   <!-- Footer -->
+<footer class="footer has-background-primary has-text-white">
+  <div class="container has-text-centered">
+    <div class="columns is-multiline is-centered">
+
+      <!-- Contacto -->
+      <div class="column is-12-mobile is-6-tablet has-text-left">
+        <p class="title is-4 has-text-white">📞 Contacto</p>
+        <p class="is-size-5"><i class="fas fa-map-marker-alt"></i> Dirección: Av. Principal 123</p>
+        <p class="is-size-5"><i class="fas fa-phone"></i> Tel: +54 11 1234-5678</p>
+        <p class="is-size-5"><i class="fas fa-envelope"></i> buscarMascota@gmail.com</p>
+        <p class="is-size-5"><i class="fas fa-clock"></i> Lunes a Viernes 09-18hs</p>
+
+        <div class="mt-4">
+          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-whatsapp fa-2x"></i></a>
+          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-facebook fa-2x"></i></a>
+          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-instagram fa-2x"></i></a>
+          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-youtube fa-2x"></i></a>
+        </div>
+      </div>
+
+      <!-- Enlaces -->
+      <div class="column is-12-mobile is-6-tablet has-text-left">
+        <p class="title is-4 has-text-white">🔗 Enlaces</p>
+        <ul class="has-text-left" style="list-style: none; padding-left: 0;">
+          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Sobre nosotros</a></li>
+          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Blog</a></li>
+          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Programas</a></li>
+          <li class="is-size-5"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Preguntas frecuentes</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+    
+  </body>
+</html>
