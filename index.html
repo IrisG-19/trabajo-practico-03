@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  <title>Buscador de Mascotas - Funcional</title>
+  <title>Buscador de Mascotas</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
+
 <body class="has-background-primary-light">
 
   <!-- Navbar -->
@@ -54,8 +56,6 @@
               </select>
             </div>
           </div>
-
-
           <div class="column is-2-desktop is-6-tablet">
             <div class="select is-medium is-fullwidth">
               <select id="filtroEdad">
@@ -66,30 +66,51 @@
               </select>
             </div>
           </div>
+          <div class="column is-2-desktop is-6-tablet">
+            <div class="select is-medium is-fullwidth">
+              <select id="filtroGenero">
+                <option value="" disabled selected>Genero</option>
+                <option value="Macho">Macho</option>
+                <option value="Hembra">Hembra</option>
+              </select>
+            </div>
+          </div>
           <div class="column is-narrow-desktop is-6-tablet">
             <div class="buttons is-centered">
-              <button id="btnBuscar" class="button is-info is-medium"><span class="icon"><i class="fas fa-search"></i></span><span>Buscar</span></button>
-              <button id="btnLimpiar" class="button is-light is-medium"><span class="icon"><i class="fas fa-times"></i></span><span>Limpiar</span></button>
+              <button id="btnBuscar" class="button is-info is-medium"><span class="icon"><i
+                    class="fas fa-search"></i></span><span>Buscar</span></button>
+              <button id="btnLimpiar" class="button is-light is-medium"><span class="icon"><i
+                    class="fas fa-times"></i></span><span>Limpiar</span></button>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Spinner -->
-      <div id="loader" class="has-text-centered my-5" style="display:none;">
-        <button class="button is-loading is-large is-white">Cargando...</button>
+      <div id="spinner" class="has-text-centered is-hidden">
+        <button class="button is-loading is-white">Cargando...</button>
       </div>
 
-      <!-- Listado de mascotas -->
-      <div id="listado" class="columns is-multiline"></div>
+      <!-- Cards de mascotas -->
+      <div id="cards" class="columns is-multiline"></div>
 
-      <!-- Mensaje vacío -->
-      <div id="mensajeVacio" class="notification is-warning has-text-centered" style="display:none;">
-        No se encontraron resultados con los filtros aplicados.
-      </div>
-
-    </div>
+      <!--Paginacion-->
+      <nav class="level mt-5">
+        <div class="level-left">
+          <button id="prev-btn" class="button">Atras</button>
+        </div>
+        <div class="level-right">
+          <button id="next-btn" class="button">Siguiente</button>
+        </div>
+      </nav>
   </section>
+
+  <!-- Notificacion-->
+  <div id="notification" class="notification is-hidden" style="position: fixed; bottom: 1rem; right: 1rem; z-index: 50;">
+   <button id="closeNotification" class="delete"></button>
+   <div id="notificationMessage"></div>
+  </div>
+
 
   <!-- Modal Form -->
   <div class="modal" id="modalMascota">
@@ -128,6 +149,16 @@
           </div>
         </div>
         <div class="field">
+          <label class="label">Genero</label>
+          <div class="select is-fullwidth">
+            <select id="inputGenero">
+              <option value="" disabled selected>Seleccionar Genero</option>
+              <option value="Macho">Macho</option>
+              <option value="Hembra">Hembra</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
           <label class="label">Imagen (URL)</label>
           <input id="inputImagen" class="input" type="url" placeholder="http://...">
         </div>
@@ -140,43 +171,47 @@
     </div>
   </div>
 
-   <!-- Footer -->
-<footer class="footer has-background-primary has-text-white">
-  <div class="container has-text-centered">
-    <div class="columns is-multiline is-centered">
+  <!-- Footer -->
+  <footer class="footer has-background-primary has-text-white">
+    <div class="container has-text-centered">
+      <div class="columns is-multiline is-centered">
 
-      <!-- Contacto -->
-      <div class="column is-12-mobile is-6-tablet has-text-left">
-        <p class="title is-4 has-text-white">📞 Contacto</p>
-        <p class="is-size-5"><i class="fas fa-map-marker-alt"></i> Dirección: Av. Principal 123</p>
-        <p class="is-size-5"><i class="fas fa-phone"></i> Tel: +54 11 1234-5678</p>
-        <p class="is-size-5"><i class="fas fa-envelope"></i> buscarMascota@gmail.com</p>
-        <p class="is-size-5"><i class="fas fa-clock"></i> Lunes a Viernes 09-18hs</p>
+        <!-- Contacto -->
+        <div class="column is-12-mobile is-6-tablet has-text-left">
+          <p class="title is-4 has-text-white">📞 Contacto</p>
+          <p class="is-size-5"><i class="fas fa-map-marker-alt"></i> Dirección: Av. Principal 123</p>
+          <p class="is-size-5"><i class="fas fa-phone"></i> Tel: +54 11 1234-5678</p>
+          <p class="is-size-5"><i class="fas fa-envelope"></i> buscarMascota@gmail.com</p>
+          <p class="is-size-5"><i class="fas fa-clock"></i> Lunes a Viernes 09-18hs</p>
 
-        <div class="mt-4">
-          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-whatsapp fa-2x"></i></a>
-          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-facebook fa-2x"></i></a>
-          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-instagram fa-2x"></i></a>
-          <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-youtube fa-2x"></i></a>
+          <div class="mt-4">
+            <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-whatsapp fa-2x"></i></a>
+            <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-facebook fa-2x"></i></a>
+            <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-instagram fa-2x"></i></a>
+            <a class="icon is-large mx-2 has-text-white" href="#"><i class="fab fa-youtube fa-2x"></i></a>
+          </div>
         </div>
-      </div>
 
-      <!-- Enlaces -->
-      <div class="column is-12-mobile is-6-tablet has-text-left">
-        <p class="title is-4 has-text-white">🔗 Enlaces</p>
-        <ul class="has-text-left" style="list-style: none; padding-left: 0;">
-          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Sobre nosotros</a></li>
-          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Blog</a></li>
-          <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Programas</a></li>
-          <li class="is-size-5"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Preguntas frecuentes</a></li>
-        </ul>
-      </div>
+        <!-- Enlaces -->
+        <div class="column is-12-mobile is-6-tablet has-text-left">
+          <p class="title is-4 has-text-white">🔗 Enlaces</p>
+          <ul class="has-text-left" style="list-style: none; padding-left: 0;">
+            <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Sobre
+                nosotros</a></li>
+            <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Blog</a></li>
+            <li class="is-size-5 mb-2"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Programas</a>
+            </li>
+            <li class="is-size-5"><i class="fas fa-paw mr-2"></i><a class="has-text-white" href="#">Preguntas
+                frecuentes</a></li>
+          </ul>
+        </div>
 
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<script src="main.js"></script>
-    
-  </body>
+  <script src="main.js"></script>
+
+</body>
+
 </html>
